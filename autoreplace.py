@@ -5,8 +5,8 @@ Script to automate gcode splicing for SVG patterned-prints
 See example: https://www.youtube.com/watch?v=zSgW0KoguXc
 
 Usage:
-Place script in a folder
-Edit the script so model_input and svg_input to point to your pre-generated gcode files from Cura
+Place script in a folder with pre-generated gcode files from Cura
+Edit the script so model_input and svg_input to point to your gcode files
 
 Run the following from a terminal/cmd/powershell
 $ cd <SCRIPTDIRECTORY>
@@ -16,8 +16,8 @@ $ python3 autoreplace.py
 """
 
 # Edit model_input and svg_input to point to your gcode files
-model_input = "cylinder70x30.gcode"
-svg_input = "tumbling-blocks-cartesian.gcode"
+model_input = "model_gcode.gcode"
+svg_input = "svg_gcode.gcode"
 output = "spliced.gcode"
 #TODO: add argparse for these
 
@@ -33,7 +33,9 @@ because software is weird and counts from zero, not one (zero index))
 Open the svg gcode file and read through it line by line.
 Any lines between ";LAYER:0" and ";LAYER:1" are saved to the list
 """
-with open(svg_input, "r") as svg_gcode:
+
+print("finding SVG layers")
+with open(svg_input) as svg_gcode:
     copy = False
 
     for line in svg_gcode:
@@ -60,8 +62,8 @@ result in erratic printer behaviour, like rapid retractions, z jumps, etc. Gotta
 
 """
 
-print("opening model gcode")
-with open(model_input, "r") as model_gcode, open(output, "w") as spliced:
+print("adding into model gcode")
+with open(model_input) as model_gcode, open(output, "w") as spliced:
     paste = True
 
     for line in model_gcode:
